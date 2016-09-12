@@ -52,6 +52,7 @@ private object CompilerMain {
       new SimpleOfVisitor, // convert _of(_*variable) => _*variableof
       new LambdaVariableVisitor, // handle _lambdavariable
       new LocalsVisitor, // convert _let/_repeat to _locals
+      new RepeatVisitor, // convert repeat to use local variable
       new SetVisitor,  // convert _set to specific setters
       new Optimizer(program.dialect.is3D),  // do various code-improving rewrites
       new ArgumentStuffer // fill args arrays in Commands & Reporters

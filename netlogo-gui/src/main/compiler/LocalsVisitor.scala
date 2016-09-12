@@ -13,16 +13,12 @@ import org.nlogo.prim._
  *
  * "Whenever possible" is "whenever it's not inside an ask". We must find and convert two prims:
  * _let and _letvariable.  We also must remove the variable from the procedure's lets list and add
- * it to the procedure's locals list.
- *
- * We also do the same thing with "repeat", which by default uses the "let" mechanism, but must be
- * changed to use the "locals" mechanism when used outside "ask". */
+ * it to the procedure's locals list. */
 
 private class LocalsVisitor extends DefaultAstVisitor {
 
   private var procedure: Option[Procedure] = Option.empty[Procedure]
   private var askNestingLevel = 0
-  private var vn = 0   // used when converting _repeat to _repeatlocal
 
   override def visitProcedureDefinition(procdef: ProcedureDefinition) {
     procedure = Some(procdef.procedure)
@@ -53,27 +49,6 @@ private class LocalsVisitor extends DefaultAstVisitor {
           } {
             convertSetToLocal(stmt, newProcedureVar(localIndex, l.let, None))
           }
-        super.visitStatement(stmt)
-      case r: _repeat =>
-        if (! procedure.exists(_.isLambda) && askNestingLevel == 0) {
-          procedure.foreach { proc =>
-            vn = proc.args.size
-            val newrepeat = new _repeatlocal(vn)
-            newrepeat.copyMetadataFrom(stmt.command)
-            stmt.command = newrepeat
-            proc.localsCount += 1
-            // actual name here doesn't really matter, I don't think - ST 11/10/05
-            proc.args :+= "_repeatlocal:" + vn
-          }
-        }
-        super.visitStatement(stmt)
-      case ri: _repeatinternal =>
-        if(askNestingLevel == 0) {
-          val newRepeat = new _repeatlocalinternal(vn, // vn from the _repeat we just saw
-                                                  ri.offset)
-          newRepeat.copyMetadataFrom(stmt.command)
-          stmt.command = newRepeat
-        }
         super.visitStatement(stmt)
       case _ => super.visitStatement(stmt)
     }
