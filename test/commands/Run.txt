@@ -36,3 +36,6 @@ run-evaluate-string-input-only-once
   to-report foo set glob1 glob1 + 1 report "__ignore glob1" end
   O> run foo
   glob1 => 1
+
+run-holds-full-lexical-context
+  to f [ x ] print runresult "x" foreach ["x"] [ [expr] -> print runresult expr ] end
