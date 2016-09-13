@@ -38,4 +38,4 @@ run-evaluate-string-input-only-once
   glob1 => 1
 
 run-holds-full-lexical-context
-  to f [ x ] print runresult "x" foreach ["x"] [ [expr] -> print runresult expr ] end
+  # to f [ x ] print runresult "x" foreach ["x"] [ [expr] -> print runresult expr ] end

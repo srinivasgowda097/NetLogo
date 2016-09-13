@@ -199,5 +199,6 @@ ConciseSyntax10
 
 SettableVariables
   globals [glob1]
-  run (runresult [ [bar] -> [ [] -> set bar 1 set glob1 bar] ] 0)
+  to foo run (runresult [ [bar] -> [ [] -> set bar 1 set glob1 bar] ] 0) end
+  O> foo
   glob1 => 1
