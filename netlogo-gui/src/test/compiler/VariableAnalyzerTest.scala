@@ -16,7 +16,7 @@ class VariableAnalyzerTest extends FunSuite {
   }
 
   def assertAnalysisDefines(code: String, varName: String, constraint: VariableConstraint): Unit = {
-    assertResult(constraint)(VariableAnalyzer(compile(code))(varName.toUpperCase))
+    assert(VariableAnalyzer(compile(code))(varName.toUpperCase).contains(constraint))
   }
 
   def assertAnalysisUndefined(code: String, varName: String): Unit = {
@@ -51,5 +51,9 @@ class VariableAnalyzerTest extends FunSuite {
 
   test("a let-variable in a looped block is returned in analysis") {
     assertAnalysisDefines("to foo repeat 10 [ let bar 0 print bar ] end", "bar", LoopBlock(LetVariable))
+  }
+
+  test("a let-variable in a loop closed over by an anonymous procedure is returned in analysis") {
+    assertAnalysisDefines("to foo repeat 10 [ let bar 0 run [ [] -> set bar 10 ] ] end", "bar", LoopBlock(AnonProcedure(LetVariable)))
   }
 }

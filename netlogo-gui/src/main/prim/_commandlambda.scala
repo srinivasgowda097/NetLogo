@@ -9,9 +9,10 @@ import scala.collection.JavaConversions._
 class _commandlambda(val argumentNames: Seq[String]) extends Reporter {
   var proc: Procedure = null
 
-  override def report(c: Context): AnyRef =
+  override def report(c: Context): AnyRef = {
     AnonymousCommand(procedure = proc,
                 formals   = proc.lambdaFormals,
                 lets      = c.allLets,
                 locals    = c.activation.args)
+  }
 }
