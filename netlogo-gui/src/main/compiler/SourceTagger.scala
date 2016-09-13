@@ -35,9 +35,8 @@ private class SourceTagger(sources: Map[String, String]) extends DefaultAstVisit
     val capturedSources = captureInternalSources(() => super.visitReporterApp(app))
     val ((start, end), prefix, argSources) = app.reporter match {
       case ct: org.nlogo.prim._reporterlambda => ((app.start, app.end), "", Seq())
-      case cl: org.nlogo.prim._commandlambda =>
-        ((cl.proc.pos, cl.proc.end), "", capturedSources)
-      case _                                =>
+      case cl: org.nlogo.prim._commandlambda  => ((cl.proc.pos, cl.proc.end), "", Seq())
+      case _                                  =>
         val positions = Option(app.reporter.token).map(token => (token.start, token.end)).getOrElse((app.start, app.end))
         (positions, "", capturedSources)
     }
